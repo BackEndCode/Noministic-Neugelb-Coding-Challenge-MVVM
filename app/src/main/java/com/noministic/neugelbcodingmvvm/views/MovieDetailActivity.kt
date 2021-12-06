@@ -6,10 +6,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.noministic.neugelbcodingmvvm.model.Constants.IMDB_PRE_IMAGE_PATH
-import com.noministic.neugelbcodingmvvm.model.Constants.MOVIE_ID_PARAM
 import com.noministic.neugelbcodingmvvm.R
 import com.noministic.neugelbcodingmvvm.databinding.ActivityMovieDetailBinding
+import com.noministic.neugelbcodingmvvm.model.Constants.IMDB_PRE_IMAGE_PATH
+import com.noministic.neugelbcodingmvvm.model.Constants.MOVIE_ID_PARAM
 import com.noministic.neugelbcodingmvvm.model.ProductionCountry
 import com.noministic.neugelbcodingmvvm.viewmodel.MovieDetailViewModel
 import com.squareup.picasso.Picasso
@@ -69,8 +69,9 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //Log.e("NOMI", item.itemId.toString().plus(" home ID:").plus(R.id.home))
         when (item.itemId) {
-            R.id.home -> {
+            android.R.id.home -> {
                 onBackPressed()
                 return true
             }
