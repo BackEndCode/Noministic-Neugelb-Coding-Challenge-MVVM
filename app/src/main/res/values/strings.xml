@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Neugelb Coding MVVM</string>
+    <string name="there_is_a_problem_fetching_data">There is a problem fetching data</string>
+    <string name="search_title">Search Movie</string>
+    <string name="main_movie_image">Main Movie Banner</string>
+    <string name="release_date">"Release date: "</string>
+    <string name="rating">"Rating: "</string>
+    <string name="Internet_failure">Opps: Looks like your internet is not working please retry.</string>
+    <string name="revenue">"Revenue - "</string>
+    <string name="ratingCount">"Rating count - "</string>
+    <string name="status">"Status - "</string>
+    <string name="product_countries">"Production Countries - "</string>
+</resources>
