@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.noministic.neugelbcodingmvvm.model.Constants.MOVIE_ID_PARAM
 import com.noministic.neugelbcodingmvvm.R
+import com.noministic.neugelbcodingmvvm.model.Constants.MOVIE_ID_PARAM
 import com.noministic.neugelbcodingmvvm.model.Movie
 import com.noministic.neugelbcodingmvvm.views.MovieDetailActivity
 import com.squareup.picasso.Picasso
@@ -57,7 +57,7 @@ class MoviesAdapter(var movies: ArrayList<Movie>) :
 
     fun gotoMovieDetailActivity(context: Context, movie_id: Int) {
         val intent = Intent(context, MovieDetailActivity::class.java)
-        intent.putExtra(MOVIE_ID_PARAM, Integer.valueOf(movie_id))
+        intent.apply { putExtra(MOVIE_ID_PARAM, Integer.valueOf(movie_id)) }
         context.startActivity(intent)
     }
 }

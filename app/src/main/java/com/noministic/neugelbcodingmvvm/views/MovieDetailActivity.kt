@@ -36,24 +36,38 @@ class MovieDetailActivity : AppCompatActivity() {
 
     fun observeViewModel() {
         viewModel.movie.observe(this, { movie ->
-            binding.textViewRatingCount.text =
-                getString(R.string.rating).plus(movie.voteAverage.toString()).plus(" ")
-                    .plus(getString(R.string.ratingCount)).plus(movie.voteCount)
-            binding.textviewTitle.text = movie.title
-            binding.textviewRevenue.text =
-                getString(R.string.revenue).plus(movie.revenue.toString())
-            binding.textviewReleaseDate.text =
-                getString(R.string.release_date).plus(movie.releaseDate)
-            binding.textviewStatus.text = getString(R.string.status).plus(movie.status)
-            binding.textviewDesc.text = movie.overview
-            Picasso.get().load(IMDB_PRE_IMAGE_PATH + movie.posterPath)
-                .into(binding.imageviewMovie)
-            binding.textviewPCountries.text =
-                getString(R.string.product_countries).plus(getProductionCountriesString(movie.productionCountries))
+            binding.apply {
+                textViewRatingCount.text =
+                    getString(R.string.rating).plus(movie.voteAverage.toString()).plus(" ")
+                        .plus(getString(R.string.ratingCount)).plus(movie.voteCount)
+                textviewTitle.text = movie.title
+                textviewRevenue.text =
+                    getString(R.string.revenue).plus(movie.revenue.toString())
+                textviewReleaseDate.text =
+                    getString(R.string.release_date).plus(movie.releaseDate)
+                textviewStatus.text = getString(R.string.status).plus(movie.status)
+                textviewDesc.text = movie.overview
+                Picasso.get().load(IMDB_PRE_IMAGE_PATH + movie.posterPath)
+                    .into(imageviewMovie)
+                textviewPCountries.text =
+                    getString(R.string.product_countries).plus(getProductionCountriesString(movie.productionCountries))
 
+            }
         })
         viewModel.loadingError.observe(this, Observer { isError ->
-            isError.let { binding.errorTextview.visibility = if (it) View.VISIBLE else View.GONE }
+            isError.let {
+                if (it) {
+                    binding.errorTextview.visibility = View.VISIBLE
+                    binding.imageLayout.visibility = View.GONE
+                    binding.detailsLayout.visibility = View.GONE
+                    binding.progressbar.visibility = View.GONE
+                } else {
+                    binding.errorTextview.visibility = View.GONE
+                    binding.imageLayout.visibility = View.VISIBLE
+                    binding.detailsLayout.visibility = View.VISIBLE
+                    binding.progressbar.visibility = View.GONE
+                }
+            }
         })
         viewModel.loading.observe(this, Observer { isLoading ->
             isLoading.let { binding.progressbar.visibility = if (it) View.VISIBLE else View.GONE }

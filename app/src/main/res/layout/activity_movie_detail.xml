@@ -24,6 +24,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/details_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_layout"
@@ -110,7 +111,7 @@
 
     <TextView
         android:id="@+id/error_textview"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"

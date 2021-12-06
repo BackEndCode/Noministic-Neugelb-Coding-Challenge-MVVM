@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[MoviesListViewModel::class.java]
         viewModel.refresh()
 
-
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = moviesAdapter
@@ -53,9 +52,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.options_menu, menu)
-        val mSearchView = menu!!.findItem(R.id.search).actionView as SearchView
+        menuInflater.inflate(R.menu.options_menu, menu)
+        val mSearchView = menu?.findItem(R.id.search)?.actionView as SearchView
         suggestionAdapter = SearchCursorAdaptor(
             this,
             R.layout.cursor_layout_item,
@@ -63,39 +61,42 @@ class MainActivity : AppCompatActivity() {
             arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1),
             intArrayOf(R.id.textView_search_title)
         )
-        mSearchView.apply { suggestionsAdapter = suggestionAdapter }
-        mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
+        mSearchView.apply {
+            suggestionsAdapter = suggestionAdapter
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    return false
+                }
 
-            override fun onQueryTextChange(query: String): Boolean {
-                if (query.isNotEmpty())
-                    viewModel.searchMovie(query)
-                return true
-            }
-        })
-        mSearchView.setOnSuggestionListener(object : SearchView.OnSuggestionListener {
-            override fun onSuggestionSelect(position: Int): Boolean {
-                return false
-            }
+                override fun onQueryTextChange(query: String): Boolean {
+                    if (query.isNotEmpty())
+                        viewModel.searchMovie(query)
+                    return true
+                }
+            })
+            setOnSuggestionListener(object : SearchView.OnSuggestionListener {
+                override fun onSuggestionSelect(position: Int): Boolean {
+                    return false
+                }
 
-            override fun onSuggestionClick(position: Int): Boolean {
-                mSearchView.setQuery(viewModel.suggestions.value?.get(position), false)
-                mSearchView.clearFocus()
-                val cursor = suggestionAdapter!!.getItem(position) as Cursor
-                val movie_id = cursor.getString(0)
-                //Log.e("NOMI", cursor.getString(0));
-                gotoMovieDetailActivity(movie_id.toInt())
-                return true
-            }
-        })
+                override fun onSuggestionClick(position: Int): Boolean {
+                    mSearchView.setQuery(viewModel.suggestions.value?.get(position), false)
+                    mSearchView.clearFocus()
+                    val cursor = suggestionAdapter?.getItem(position) as Cursor
+                    val movie_id = cursor.getString(0)
+                    //Log.e("NOMI", cursor.getString(0));
+                    gotoMovieDetailActivity(movie_id.toInt())
+                    return true
+                }
+            })
+        }
         return true
     }
 
     fun gotoMovieDetailActivity(movie_id: Int) {
-        val intent = Intent(this, MovieDetailActivity::class.java)
-        intent.putExtra(Constants.MOVIE_ID_PARAM, Integer.valueOf(movie_id))
+        val intent = Intent(this, MovieDetailActivity::class.java).apply {
+            putExtra(Constants.MOVIE_ID_PARAM, Integer.valueOf(movie_id))
+        }
         startActivity(intent)
     }
 
