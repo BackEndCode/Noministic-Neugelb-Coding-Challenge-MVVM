@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
@@ -18,9 +19,12 @@ import com.noministic.neugelbcodingmvvm.model.Constants
 import com.noministic.neugelbcodingmvvm.viewmodel.MoviesListViewModel
 import com.noministic.neugelbcodingmvvm.views.Adapters.MoviesAdapter
 import com.noministic.neugelbcodingmvvm.views.Adapters.SearchCursorAdaptor
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    lateinit var viewModel: MoviesListViewModel
+    private val viewModel: MoviesListViewModel by viewModels()
     private val moviesAdapter = MoviesAdapter(arrayListOf())
     var suggestionAdapter: SearchCursorAdaptor? = null
     private lateinit var binding: ActivityMainBinding
@@ -31,8 +35,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        viewModel = ViewModelProvider(this)[MoviesListViewModel::class.java]
         viewModel.refresh()
 
         binding.recyclerView.apply {
@@ -51,9 +53,9 @@ class MainActivity : AppCompatActivity() {
         observeViewModel()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
-        val mSearchView = menu?.findItem(R.id.search)?.actionView as SearchView
+        val mSearchView = menu.findItem(R.id.search)?.actionView as SearchView
         suggestionAdapter = SearchCursorAdaptor(
             this,
             R.layout.cursor_layout_item,

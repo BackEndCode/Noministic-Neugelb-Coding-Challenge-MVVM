@@ -1,12 +1,8 @@
 package com.noministic.neugelbcodingmvvm.api
 
-import com.noministic.neugelbcodingmvvm.model.Constants.BASE_URL
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+class MoviesService(private val apiService: RequestInterface) {
+    fun getSingleMovie(id: Int, api: String) = apiService.getSingleMovie(id, api)
+    fun getTrendingMovies(api: String, pageNum: Int) = apiService.getTrendingMovies(api, pageNum)
+    fun searchMovie(api: String, query: String) = apiService.searchMovie(api, query)
 
-class MoviesService {
-    val api: RequestInterface = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build().create(RequestInterface::class.java)
 }

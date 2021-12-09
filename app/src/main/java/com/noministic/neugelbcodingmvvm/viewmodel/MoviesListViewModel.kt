@@ -10,12 +10,14 @@ import com.noministic.neugelbcodingmvvm.api.MoviesService
 import com.noministic.neugelbcodingmvvm.model.Constants.API_KEY
 import com.noministic.neugelbcodingmvvm.model.Movie
 import com.noministic.neugelbcodingmvvm.model.Result
+import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class MoviesListViewModel : ViewModel() {
-    val moviesService = MoviesService()
+@HiltViewModel
+class MoviesListViewModel @Inject constructor(private val moviesService: MoviesService)  : ViewModel() {
     val movies = MutableLiveData<List<Movie>>()
     val loading = MutableLiveData<Boolean>()
     val loadingError = MutableLiveData<Boolean>()
@@ -37,7 +39,7 @@ class MoviesListViewModel : ViewModel() {
     private fun loadMovies() {
         loading.value = true
         val moviesCall =
-            moviesService.api.getTrendingMovies(API_KEY, pagesLoaded + 1)
+            moviesService.getTrendingMovies(API_KEY, pagesLoaded + 1)
         moviesCall?.enqueue(object : Callback<Result?> {
             override fun onResponse(call: Call<Result?>, response: Response<Result?>) {
                 movies.value = response.body()?.movies
@@ -55,7 +57,7 @@ class MoviesListViewModel : ViewModel() {
     }
 
     fun searchMovie(query: String) {
-        val searchCall = moviesService.api.searchMovie(API_KEY, query)
+        val searchCall = moviesService.searchMovie(API_KEY, query)
         searchCall?.enqueue(object : Callback<Result?> {
             override fun onResponse(call: Call<Result?>, response: Response<Result?>) {
                 val mMovieModelList = response.body()?.movies

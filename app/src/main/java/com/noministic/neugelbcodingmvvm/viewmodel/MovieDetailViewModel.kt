@@ -2,14 +2,18 @@ package com.noministic.neugelbcodingmvvm.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.noministic.neugelbcodingmvvm.model.MovieDetailModel
 import com.noministic.neugelbcodingmvvm.api.MoviesService
+import com.noministic.neugelbcodingmvvm.api.RequestInterface
+import com.noministic.neugelbcodingmvvm.model.Constants
+import com.noministic.neugelbcodingmvvm.model.MovieDetailModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class MovieDetailViewModel : ViewModel() {
-    val moviesService = MoviesService()
+@HiltViewModel
+class MovieDetailViewModel @Inject constructor(private val moviesService: MoviesService) : ViewModel() {
     val movie = MutableLiveData<MovieDetailModel>()
     val loading = MutableLiveData<Boolean>()
     val loadingError = MutableLiveData<Boolean>()
@@ -19,8 +23,7 @@ class MovieDetailViewModel : ViewModel() {
 
     private fun loadMovie(id: Int) {
         loading.value = true
-        val call =
-            moviesService.api.getSingleMovie(id, "af34851455aab38957c96592591b38c0")
+        val call = moviesService.getSingleMovie(id, Constants.API_KEY)
         call?.enqueue(object : Callback<MovieDetailModel?> {
             override fun onResponse(
                 call: Call<MovieDetailModel?>,

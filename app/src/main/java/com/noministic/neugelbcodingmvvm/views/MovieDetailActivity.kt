@@ -3,6 +3,7 @@ package com.noministic.neugelbcodingmvvm.views
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,10 +14,12 @@ import com.noministic.neugelbcodingmvvm.model.Constants.MOVIE_ID_PARAM
 import com.noministic.neugelbcodingmvvm.model.ProductionCountry
 import com.noministic.neugelbcodingmvvm.viewmodel.MovieDetailViewModel
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MovieDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMovieDetailBinding
-    lateinit var viewModel: MovieDetailViewModel
+    private val viewModel: MovieDetailViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +29,6 @@ class MovieDetailActivity : AppCompatActivity() {
         val actionBar = supportActionBar!!
         // showing the back button in action bar
         actionBar.setDisplayHomeAsUpEnabled(true)
-        viewModel = ViewModelProvider(this)[MovieDetailViewModel::class.java]
         if (!intent.extras?.isEmpty!!) {
             val movie_id = intent.extras?.getInt(MOVIE_ID_PARAM)
             movie_id?.let { viewModel.getMovie(it) }
