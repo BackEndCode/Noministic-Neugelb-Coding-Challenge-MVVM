@@ -4,22 +4,21 @@ import android.app.SearchManager
 import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.noministic.neugelbcodingmvvm.R
 import com.noministic.neugelbcodingmvvm.databinding.ActivityMainBinding
-import com.noministic.neugelbcodingmvvm.model.Constants
+import com.noministic.neugelbcodingmvvm.others.Constants
 import com.noministic.neugelbcodingmvvm.viewmodel.MoviesListViewModel
 import com.noministic.neugelbcodingmvvm.views.Adapters.MoviesAdapter
 import com.noministic.neugelbcodingmvvm.views.Adapters.SearchCursorAdaptor
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -87,6 +86,7 @@ class MainActivity : AppCompatActivity() {
                     val cursor = suggestionAdapter?.getItem(position) as Cursor
                     val movie_id = cursor.getString(0)
                     //Log.e("NOMI", cursor.getString(0));
+                    Log.e("NOMI",movie_id)
                     gotoMovieDetailActivity(movie_id.toInt())
                     return true
                 }

@@ -5,7 +5,7 @@
       <map>
         <entry key="app/src/main/res/drawable/button_focused.xml" value="0.15648148148148147" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.125" />
-        <entry key="app/src/main/res/layout/activity_movie_detail.xml" value="0.14791666666666667" />
+        <entry key="app/src/main/res/layout/activity_movie_detail.xml" value="0.125" />
         <entry key="app/src/main/res/layout/cursor_layout_item.xml" value="0.2318840579710145" />
         <entry key="app/src/main/res/layout/movies_recycle_item.xml" value="0.23867753623188406" />
         <entry key="app/src/main/res/menu/options_menu.xml" value="0.24583333333333332" />

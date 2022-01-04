@@ -3,22 +3,21 @@ package com.noministic.neugelbcodingmvvm.viewmodel
 import android.app.SearchManager
 import android.database.MatrixCursor
 import android.provider.BaseColumns
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.noministic.neugelbcodingmvvm.api.MoviesService
-import com.noministic.neugelbcodingmvvm.model.Constants.API_KEY
-import com.noministic.neugelbcodingmvvm.model.Movie
-import com.noministic.neugelbcodingmvvm.model.Result
+import androidx.lifecycle.viewModelScope
+import com.noministic.neugelbcodingmvvm.data.DefaultShoppingRepository
+import com.noministic.neugelbcodingmvvm.model.MovieDetailModel
+import com.noministic.neugelbcodingmvvm.others.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MoviesListViewModel @Inject constructor(private val moviesService: MoviesService)  : ViewModel() {
-    val movies = MutableLiveData<List<Movie>>()
+class MoviesListViewModel @Inject constructor(private val defaultShoppingRepository: DefaultShoppingRepository) :
+    ViewModel() {
+
+    val movies = MutableLiveData<List<MovieDetailModel>>()
     val loading = MutableLiveData<Boolean>()
     val loadingError = MutableLiveData<Boolean>()
     var cursor: MatrixCursor? = null
@@ -37,57 +36,70 @@ class MoviesListViewModel @Inject constructor(private val moviesService: MoviesS
     }
 
     private fun loadMovies() {
-        loading.value = true
-        val moviesCall =
-            moviesService.getTrendingMovies(API_KEY, pagesLoaded + 1)
-        moviesCall?.enqueue(object : Callback<Result?> {
-            override fun onResponse(call: Call<Result?>, response: Response<Result?>) {
-                movies.value = response.body()?.movies
-                pagesLoaded = response.body()?.page!!
-                totalPages = response.body()?.totalPages!!
-                loading.value = false
-                loadingError.value = false
+        viewModelScope.launch {
+            loading.postValue(true)
+            val response = defaultShoppingRepository.getTrendingMovies(pageNum = pagesLoaded + 1)
+            when (response.status) {
+                Status.ERROR -> {
+                    loading.value = false
+                    loadingError.value = true
+                }
+                Status.LOADING -> {
+                    loading.value = true
+                }
+                Status.SUCCESS -> {
+                    loading.value = false
+                    loadingError.value = false
+                    response.data?.let {
+                        movies.value = it.movies
+                        pagesLoaded = it.page
+                        totalPages = it.totalResults
+                    }
+                }
             }
-
-            override fun onFailure(call: Call<Result?>, t: Throwable) {
-                loading.value = false
-                loadingError.value = true
-            }
-        })
+        }
     }
 
     fun searchMovie(query: String) {
-        val searchCall = moviesService.searchMovie(API_KEY, query)
-        searchCall?.enqueue(object : Callback<Result?> {
-            override fun onResponse(call: Call<Result?>, response: Response<Result?>) {
-                val mMovieModelList = response.body()?.movies
-                suggestions.value?.clear()
-                if (mMovieModelList?.size!! > 0) {
-                    val columns = arrayOf(
-                        BaseColumns._ID,
-                        SearchManager.SUGGEST_COLUMN_TEXT_1,
-                        SearchManager.SUGGEST_COLUMN_INTENT_DATA
-                    )
-                    cursor = MatrixCursor(columns)
-                    val updatedSuggestions: ArrayList<String> = arrayListOf()
-                    for (movie in mMovieModelList) {
-                        updatedSuggestions.add(movie.title)
-                        val tmp = arrayOf(
-                            movie.id.toString(),
-                            movie.title,
-                            movie.id.toString()
-                        )
-                        cursor!!.addRow(tmp)
-                    }
-                    suggestions.value = updatedSuggestions
+        viewModelScope.launch {
+            val searchCall = defaultShoppingRepository.searchMovie(query = query)
+            when (searchCall.status) {
+                Status.ERROR -> {
+                    loading.value = false
+                    loadingError.value = true
                 }
-
+                Status.LOADING -> {
+                    loading.value = true
+                }
+                Status.SUCCESS -> {
+                    loading.value = false
+                    loadingError.value = false
+                    searchCall.data?.let {
+                        val mMovieModelList = it.movies
+                        suggestions.value?.clear()
+                        if (mMovieModelList.size > 0) {
+                            val columns = arrayOf(
+                                BaseColumns._ID,
+                                SearchManager.SUGGEST_COLUMN_TEXT_1,
+                                SearchManager.SUGGEST_COLUMN_INTENT_DATA
+                            )
+                            cursor = MatrixCursor(columns)
+                            val updatedSuggestions: ArrayList<String> = arrayListOf()
+                            for (movie in mMovieModelList) {
+                                updatedSuggestions.add(movie.title)
+                                val tmp = arrayOf(
+                                    movie.id.toString(),
+                                    movie.title,
+                                    movie.id.toString()
+                                )
+                                cursor!!.addRow(tmp)
+                            }
+                            suggestions.value = updatedSuggestions
+                        }
+                    }
+                }
             }
-
-            override fun onFailure(call: Call<Result?>, t: Throwable) {
-                Log.e("MoviesListViewModel", t.message.toString())
-            }
-        })
+        }
     }
 }
 

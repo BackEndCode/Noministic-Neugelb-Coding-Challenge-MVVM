@@ -35,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_lefts"
-            android:text="Clifford the Big Red Dog"
             android:textColor="@color/black"
             android:textSize="@dimen/title_text_size"
             android:textStyle="bold" />
@@ -49,9 +48,7 @@
                 android:id="@+id/textview_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textview_title"
                 android:layout_marginBottom="@dimen/margin_lefts"
-                android:text="Released"
                 android:textColor="@color/black"
                 android:textSize="@dimen/title_text_size" />
 
@@ -60,7 +57,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_lefts"
-                android:text="27-10-2021"
                 android:textColor="@color/black"
                 android:textSize="@dimen/title_text_size" />
 
@@ -72,7 +68,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_lefts"
-            android:text="Rating 2.7 - Total rating 300"
             android:textColor="@color/black"
             android:textSize="@dimen/title_text_size" />
 
@@ -81,7 +76,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_lefts"
-            android:text="Revenue - 40,000"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
@@ -90,7 +84,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_lefts"
-            android:text="Revenue - 40,000"
             android:textColor="@color/black"
             android:textSize="@dimen/title_text_size" />
 
@@ -98,8 +91,7 @@
             android:id="@+id/textview_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="5"
-            android:text="As Emily struggles to fit in at home and at school, she discovers a small red puppy who is destined to become her best friend. When Clifford magically undergoes one heck of a growth spurt, becomes a gigantic dog and attracts the attention of a genetics company, Emily and her Uncle Casey have to fight the forces of greed as they go on the run across New York City. Along the way, Clifford affects the lives of everyone around him and teaches Emily and her uncle the true meaning of acceptance and unconditional love." />
+            android:maxLines="5" />
 
     </LinearLayout>
 
@@ -116,5 +108,13 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:text="@string/there_is_a_problem_fetching_data" />
+
+    <Button
+        android:id="@+id/add_to_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/details_layout"
+        android:layout_alignParentEnd="true"
+        android:text="@string/button_text" />
 
 </RelativeLayout>

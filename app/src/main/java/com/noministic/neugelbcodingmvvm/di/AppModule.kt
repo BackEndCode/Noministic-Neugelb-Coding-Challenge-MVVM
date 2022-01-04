@@ -1,11 +1,17 @@
 package com.noministic.neugelbcodingmvvm.di
 
-import com.noministic.neugelbcodingmvvm.api.MoviesService
-import com.noministic.neugelbcodingmvvm.api.RequestInterface
-import com.noministic.neugelbcodingmvvm.model.Constants
+import android.content.Context
+import androidx.room.Room
+import com.noministic.neugelbcodingmvvm.data.DefaultShoppingRepository
+import com.noministic.neugelbcodingmvvm.data.MoviesRepository
+import com.noministic.neugelbcodingmvvm.data.local.MoviesDao
+import com.noministic.neugelbcodingmvvm.data.local.MoviesDatabase
+import com.noministic.neugelbcodingmvvm.data.remote.MoviesAPI
+import com.noministic.neugelbcodingmvvm.others.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,13 +23,24 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRequestInterface(): RequestInterface = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build().create(RequestInterface::class.java)
+    fun providesMoviesDatabase(@ApplicationContext context: Context): MoviesDao =
+        Room.databaseBuilder(
+            context,
+            MoviesDatabase::class.java, Constants.MOVIES_DATABASE_NAME
+        ).build().moviesDao()
 
     @Singleton
     @Provides
-    fun provideMoviesService(requestInterface: RequestInterface): MoviesService =
-        MoviesService(requestInterface)
+    fun providesDefaultShoppingRepository(
+        movies: MoviesDao,
+        moviesAPI: MoviesAPI
+    ): MoviesRepository =
+        DefaultShoppingRepository(movies, moviesAPI)
+
+    @Singleton
+    @Provides
+    fun provideRequestInterface(): MoviesAPI = Retrofit.Builder()
+        .baseUrl(Constants.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build().create(MoviesAPI::class.java)
 }

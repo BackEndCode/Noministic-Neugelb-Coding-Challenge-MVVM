@@ -1,43 +1,65 @@
 package com.noministic.neugelbcodingmvvm.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.noministic.neugelbcodingmvvm.api.MoviesService
-import com.noministic.neugelbcodingmvvm.api.RequestInterface
-import com.noministic.neugelbcodingmvvm.model.Constants
+import androidx.lifecycle.viewModelScope
+import com.noministic.neugelbcodingmvvm.data.DefaultShoppingRepository
 import com.noministic.neugelbcodingmvvm.model.MovieDetailModel
+import com.noministic.neugelbcodingmvvm.others.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieDetailViewModel @Inject constructor(private val moviesService: MoviesService) : ViewModel() {
+class MovieDetailViewModel @Inject constructor(
+    private val defaultShoppingRepository:
+    DefaultShoppingRepository
+) :
+    ViewModel() {
+
     val movie = MutableLiveData<MovieDetailModel>()
     val loading = MutableLiveData<Boolean>()
     val loadingError = MutableLiveData<Boolean>()
+    val moviesLoadingError = MutableLiveData<String>()
     fun getMovie(id: Int) {
         loadMovie(id)
     }
 
-    private fun loadMovie(id: Int) {
-        loading.value = true
-        val call = moviesService.getSingleMovie(id, Constants.API_KEY)
-        call?.enqueue(object : Callback<MovieDetailModel?> {
-            override fun onResponse(
-                call: Call<MovieDetailModel?>,
-                response: Response<MovieDetailModel?>
-            ) {
-                movie.value = response.body()
-                loading.value = false
-                loadingError.value = false
-            }
+    fun addMovieToFavorite() {
+        viewModelScope.launch {
+            movie.value?.let { defaultShoppingRepository.insertMovie(it) }
+        }
+    }
 
-            override fun onFailure(call: Call<MovieDetailModel?>, t: Throwable) {
+    private fun loadMovie(id: Int) {
+        viewModelScope.launch {
+            val added = defaultShoppingRepository.addedToFavoriteOrNot(id)
+            if (added != null) {
+                loadingError.value = false
                 loading.value = false
-                loadingError.value = true
+                movie.value = added!!
+            } else {
+                loading.postValue(true)
+                val response = defaultShoppingRepository.getSingleMovie(id)
+                when (response.status) {
+                    Status.ERROR -> {
+                        loading.postValue(false)
+                        loadingError.postValue(true)
+                        response.message?.let { moviesLoadingError.postValue(it) }
+
+                    }
+                    Status.LOADING -> {
+                        loading.value = true
+                    }
+                    Status.SUCCESS -> {
+                        loading.value = false
+                        loadingError.value = false
+                        response.data?.let { movie.value = it }
+                    }
+                }
             }
-        })
+        }
+
     }
 }

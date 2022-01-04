@@ -6,11 +6,10 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.noministic.neugelbcodingmvvm.R
 import com.noministic.neugelbcodingmvvm.databinding.ActivityMovieDetailBinding
-import com.noministic.neugelbcodingmvvm.model.Constants.IMDB_PRE_IMAGE_PATH
-import com.noministic.neugelbcodingmvvm.model.Constants.MOVIE_ID_PARAM
+import com.noministic.neugelbcodingmvvm.others.Constants.IMDB_PRE_IMAGE_PATH
+import com.noministic.neugelbcodingmvvm.others.Constants.MOVIE_ID_PARAM
 import com.noministic.neugelbcodingmvvm.model.ProductionCountry
 import com.noministic.neugelbcodingmvvm.viewmodel.MovieDetailViewModel
 import com.squareup.picasso.Picasso
@@ -26,17 +25,19 @@ class MovieDetailActivity : AppCompatActivity() {
         binding = ActivityMovieDetailBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        val actionBar = supportActionBar!!
         // showing the back button in action bar
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         if (!intent.extras?.isEmpty!!) {
             val movie_id = intent.extras?.getInt(MOVIE_ID_PARAM)
             movie_id?.let { viewModel.getMovie(it) }
         }
+        binding.addToFavorite.setOnClickListener {
+            viewModel.addMovieToFavorite()
+        }
         observeViewModel()
     }
 
-    fun observeViewModel() {
+    private fun observeViewModel() {
         viewModel.movie.observe(this, { movie ->
             binding.apply {
                 textViewRatingCount.text =
@@ -51,9 +52,9 @@ class MovieDetailActivity : AppCompatActivity() {
                 textviewDesc.text = movie.overview
                 Picasso.get().load(IMDB_PRE_IMAGE_PATH + movie.posterPath)
                     .into(imageviewMovie)
-                textviewPCountries.text =
+                /*textviewPCountries.text =
                     getString(R.string.product_countries).plus(getProductionCountriesString(movie.productionCountries))
-
+*/
             }
         })
         viewModel.loadingError.observe(this, Observer { isError ->

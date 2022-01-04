@@ -1,6 +1,5 @@
 package com.noministic.neugelbcodingmvvm.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Movie(
@@ -10,14 +9,19 @@ data class Movie(
     val backdropPath: String,
     @SerializedName("genre_ids")
     val genreIds: List<Int>,
+
     @SerializedName("id")
     val id: Int,
+
     @SerializedName("media_type")
     val mediaType: String,
+
     @SerializedName("original_language")
     val originalLanguage: String,
+
     @SerializedName("original_title")
     val originalTitle: String,
+
     @SerializedName("overview")
     val overview: String,
     @SerializedName("popularity")

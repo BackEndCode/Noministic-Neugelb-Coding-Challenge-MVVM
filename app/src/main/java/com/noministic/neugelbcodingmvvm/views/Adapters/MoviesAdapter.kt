@@ -9,14 +9,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.noministic.neugelbcodingmvvm.R
-import com.noministic.neugelbcodingmvvm.model.Constants.MOVIE_ID_PARAM
+import com.noministic.neugelbcodingmvvm.others.Constants.IMDB_PRE_IMAGE_PATH
+import com.noministic.neugelbcodingmvvm.others.Constants.MOVIE_ID_PARAM
 import com.noministic.neugelbcodingmvvm.model.Movie
+import com.noministic.neugelbcodingmvvm.model.MovieDetailModel
 import com.noministic.neugelbcodingmvvm.views.MovieDetailActivity
 import com.squareup.picasso.Picasso
 
-class MoviesAdapter(var movies: ArrayList<Movie>) :
+class MoviesAdapter(var movies: ArrayList<MovieDetailModel>) :
     RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>() {
-    lateinit var context: Context
 
     class MoviesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val movieImageView = view.findViewById<ImageView>(R.id.movie_imageView)
@@ -24,18 +25,18 @@ class MoviesAdapter(var movies: ArrayList<Movie>) :
         private val movieRating = view.findViewById<TextView>(R.id.movie_rating)
         private val movieDesc = view.findViewById<TextView>(R.id.movie_desc)
         private val movieReleaseDate = view.findViewById<TextView>(R.id.movie_release_date)
-        fun bind(movie: Movie) {
+        fun bind(movie: MovieDetailModel) {
             movieTitle.text = movie.title
             movieRating.text = movie.voteAverage.toString()
             movieDesc.text = movie.overview
             movieReleaseDate.text = movie.releaseDate
-            Picasso.get().load("http://image.tmdb.org/t/p/w500/" + movie.posterPath)
+            Picasso.get().load(IMDB_PRE_IMAGE_PATH + movie.posterPath)
                 .into(movieImageView)
 
         }
     }
 
-    fun updateMovies(movies: List<Movie>) {
+    fun updateMovies(movies: List<MovieDetailModel>) {
         this.movies.addAll(movies)
         notifyItemRangeInserted(itemCount, movies.size - 1)
     }
@@ -46,9 +47,9 @@ class MoviesAdapter(var movies: ArrayList<Movie>) :
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
         holder.bind(movies[position])
-        holder.itemView.setOnClickListener(View.OnClickListener {
+        holder.itemView.setOnClickListener {
             gotoMovieDetailActivity(it.context, movies[position].id)
-        })
+        }
     }
 
     override fun getItemCount(): Int {
