@@ -7,4 +7,6 @@ This project is an online service which uses IMDB api where you can find a list 
   <li>Dagger Hilt</li>
   <li>Room database</li>
   <li>Retrofit</li>
+  <li>Instrument Testing</li>
+
 </ul>
