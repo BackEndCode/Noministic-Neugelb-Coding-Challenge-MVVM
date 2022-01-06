@@ -16,5 +16,5 @@ interface MoviesDao {
     fun observeAllMovies(): LiveData<List<MovieDetailModel>>
 
     @Query("select * from movies where id=:id")
-    suspend fun addedToFavoriteOrNot(id: Int): MovieDetailModel?
+    suspend fun getMovieById(id: Int): MovieDetailModel?
 }

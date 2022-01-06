@@ -12,7 +12,7 @@ interface MoviesRepository {
 
     fun observeAllMovies(): LiveData<List<MovieDetailModel>>
 
-    suspend fun addedToFavoriteOrNot(id: Int): MovieDetailModel?
+    suspend fun getMovieById(id: Int): MovieDetailModel?
 
     suspend fun getSingleMovie(movie_id:Int): Resource<MovieDetailModel>
 

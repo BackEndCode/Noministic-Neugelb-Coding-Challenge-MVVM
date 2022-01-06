@@ -57,7 +57,7 @@ class MovieDetailActivity : AppCompatActivity() {
 */
             }
         })
-        viewModel.loadingError.observe(this, Observer { isError ->
+        viewModel.loadingError.observe(this, { isError ->
             isError.let {
                 if (it) {
                     binding.errorTextview.visibility = View.VISIBLE

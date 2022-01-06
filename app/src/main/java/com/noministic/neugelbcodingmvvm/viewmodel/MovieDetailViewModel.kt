@@ -1,6 +1,5 @@
 package com.noministic.neugelbcodingmvvm.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,7 +33,7 @@ class MovieDetailViewModel @Inject constructor(
 
     private fun loadMovie(id: Int) {
         viewModelScope.launch {
-            val added = defaultShoppingRepository.addedToFavoriteOrNot(id)
+            val added = defaultShoppingRepository.getMovieById(id)
             if (added != null) {
                 loadingError.value = false
                 loading.value = false

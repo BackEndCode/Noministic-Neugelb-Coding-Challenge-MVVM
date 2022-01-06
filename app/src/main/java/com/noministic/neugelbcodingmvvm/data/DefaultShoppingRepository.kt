@@ -20,8 +20,8 @@ class DefaultShoppingRepository @Inject constructor(
         return moviesDao.observeAllMovies()
     }
 
-    override suspend fun addedToFavoriteOrNot(id: Int): MovieDetailModel? {
-        return moviesDao.addedToFavoriteOrNot(id)
+    override suspend fun getMovieById(id: Int): MovieDetailModel? {
+        return moviesDao.getMovieById(id)
     }
 
     override suspend fun getSingleMovie(movie_id: Int): Resource<MovieDetailModel> {
